@@ -3,7 +3,6 @@ package com.springboot.cruddemo.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -19,12 +18,18 @@ public class EmployeeDAOHibernateImpl implements EmployeeDAO {
 	private EntityManager entityManager;
 
 	@Override
-	@Transactional
 	public List<Employee> findAll() {
 		Session currentSession = entityManager.unwrap(Session.class);
 		Query<Employee> query = currentSession.createQuery("from Employee",Employee.class);
 		List<Employee> employees= query.getResultList();
 		return employees;
+	}
+
+	@Override
+	public Employee findEmployee(int employeeId) {
+		Session currentSession = entityManager.unwrap(Session.class);
+		Employee employee = currentSession.get(Employee.class, employeeId);
+		return employee;
 	}
 
 }
