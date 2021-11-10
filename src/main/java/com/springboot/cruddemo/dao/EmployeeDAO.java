@@ -10,6 +10,10 @@ public interface EmployeeDAO {
 
 	public Employee findEmployee(int employeeId);
 
+	public void saveorUpdateEmployee(Employee employee);
+
+	public void deleteEmployee(int employeeId);
+
 
 	
 

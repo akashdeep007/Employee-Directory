@@ -10,7 +10,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-
 @Entity
 @Table(name = "employee")
 public class Employee {
@@ -23,17 +22,17 @@ public class Employee {
 
 	@Column(name = "first_name")
 	@NotNull
-	@Pattern(regexp = "^[a-zA-Z]{2,}$",message="Please Enter Only Alphabets for First Name ")
+	@Pattern(regexp = "^[a-zA-Z]{2,}$", message = "Please Enter Only Alphabets for First Name ")
 	private String firstName;
 
 	@Column(name = "last_name")
 	@NotNull
-	@Pattern(regexp = "^[a-zA-Z]{2,}$",message="Please Enter Only Alphabets for First Name ")
+	@Pattern(regexp = "^[a-zA-Z]{2,}$", message = "Please Enter Only Alphabets for Last Name ")
 	private String lastName;
 
 	@Column(name = "email")
 	@NotNull
-	@Email
+	@Email(message = "Email should be valid")
 	private String email;
 
 	public Employee() {
