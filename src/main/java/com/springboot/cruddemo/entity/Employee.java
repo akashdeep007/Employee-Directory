@@ -6,6 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 
 @Entity
 @Table(name = "employee")
@@ -14,16 +18,22 @@ public class Employee {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-
+	@NotNull
 	private int id;
 
 	@Column(name = "first_name")
+	@NotNull
+	@Pattern(regexp = "^[a-zA-Z]{2,}$",message="Please Enter Only Alphabets for First Name ")
 	private String firstName;
 
 	@Column(name = "last_name")
+	@NotNull
+	@Pattern(regexp = "^[a-zA-Z]{2,}$",message="Please Enter Only Alphabets for First Name ")
 	private String lastName;
 
 	@Column(name = "email")
+	@NotNull
+	@Email
 	private String email;
 
 	public Employee() {
