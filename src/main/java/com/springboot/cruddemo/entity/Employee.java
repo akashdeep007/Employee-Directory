@@ -12,6 +12,7 @@ import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "employee")
+
 public class Employee {
 
 	@Id

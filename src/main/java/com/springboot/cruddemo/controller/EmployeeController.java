@@ -1,6 +1,7 @@
 package com.springboot.cruddemo.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -37,12 +38,12 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/employees/{employeeId}")
-	public Employee getEmployee(@PathVariable int employeeId) {
+	public Employee getEmployee(@PathVariable int employeeId) throws EmployeeNotFoundException {
 //		Employee employee = employeeService.findEmployee(employeeId);
-		Employee employee = employeeRepository.getById(employeeId);
-//		if (employee == null)
-//			throw new EmployeeNotFoundException("Employee id - " + employeeId + " not found ");
-		return employee;
+		Optional<Employee> employee = employeeRepository.findById(employeeId);
+		if (employee.isEmpty())
+			throw new EmployeeNotFoundException("Employee id - " + employeeId + " not found ");
+		return employee.get();
 	}
 
 	@PostMapping("/employees")
