@@ -5,6 +5,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.springboot.cruddemo.dao.EmployeeDAO;
@@ -14,6 +15,7 @@ import com.springboot.cruddemo.entity.Employee;
 public class EmployeeServiceImpl implements EmployeeService {
 
 	@Autowired
+	@Qualifier("employeeDAOJPAImpl")
 	private EmployeeDAO employeeDAO;
 
 	@Override
