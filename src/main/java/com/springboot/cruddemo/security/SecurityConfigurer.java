@@ -22,6 +22,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 	private MyUserDetailsService myUserDetailsService;
 	@Autowired
 	private JWTRequestFilter jwtRequestFilter;
+
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
@@ -36,16 +37,17 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 //	public PasswordEncoder passwordEncoder() {
 //		return NoOpPasswordEncoder.getInstance();
 //	}
-	
-	  @Bean
-	    public PasswordEncoder passwordEncoder(){
-	        return new BCryptPasswordEncoder(10);
-	    }
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder(10);
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().antMatchers("/api/login/**").permitAll().anyRequest().authenticated()
-				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.csrf().disable().authorizeRequests().antMatchers("/api/login/**").permitAll().antMatchers("/api/signup/**")
+				.permitAll().anyRequest().authenticated().and().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 

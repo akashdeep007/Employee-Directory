@@ -21,7 +21,14 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthUser authUser) throws Exception
 	{
-		AuthenticationResponse response = new AuthenticationResponse(authService.login(authUser));
+		AuthenticationResponse response = new AuthenticationResponse("User Logged In",authService.login(authUser));
 		return ResponseEntity.ok(response);
 	}
+	
+	 @PostMapping("/signup")
+	    public ResponseEntity<?> createUser(@RequestBody AuthUser aucUser) throws Exception{
+	        System.out.println(aucUser.toString());
+	        AuthenticationResponse response = new AuthenticationResponse("User Signup Successful",authService.createUser(aucUser));
+			return ResponseEntity.ok(response);
+	    }
 }
