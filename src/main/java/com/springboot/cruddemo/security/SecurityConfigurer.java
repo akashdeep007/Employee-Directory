@@ -11,8 +11,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 import com.springboot.cruddemo.service.MyUserDetailsService;
+import com.springboot.cruddemo.util.ExceptionHandlerFilter;
 import com.springboot.cruddemo.util.JWTRequestFilter;
 
 @EnableWebSecurity
@@ -22,6 +24,9 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 	private MyUserDetailsService myUserDetailsService;
 	@Autowired
 	private JWTRequestFilter jwtRequestFilter;
+	@Autowired
+	private ExceptionHandlerFilter exceptionHandlerFilter;
+	
 
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -51,6 +56,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/login/**").permitAll().antMatchers("/api/signup/**").permitAll().anyRequest()
 //				.permitAll()
 				.authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.addFilterBefore(exceptionHandlerFilter,LogoutFilter.class);
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 
