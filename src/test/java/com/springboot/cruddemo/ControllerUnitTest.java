@@ -45,10 +45,27 @@ class ControllerUnitTest {
 				.andExpect(content().json(result));
 	}
 
+	@Test
+	public void GetAllEmployeesFailingTest() throws Exception {
+		when(employeeRepository.findAll()).thenReturn(getEmptyEmployeeList());
+		mockMvc.perform(get("/api/employees"))
+				.andDo(print())
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType("application/json"))
+				.andExpect(jsonPath("$.statusCode").value(404))
+				.andExpect(jsonPath("$.message").value("No Records Exist"))
+				.andExpect(jsonPath("$.timeStamp").exists());
+	}
+
 	private List<Employee> getDummyEmployeeList() {
 		List<Employee> employees = new ArrayList<>();
 		employees.add(buildEmployee());
 		employees.add(buildEmployee());
+		return employees;
+	}
+
+	private List<Employee> getEmptyEmployeeList() {
+		List<Employee> employees = new ArrayList<>();
 		return employees;
 	}
 
