@@ -54,7 +54,8 @@ public class EmployeeController {
 		employee.setId(0);
 //		employeeService.saveEmployee(employee);
 		employeeRepository.save(employee);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(employee.getId()).toUri();
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(employee.getId())
+				.toUri();
 		return ResponseEntity.created(location).body(employee);
 
 	}
@@ -68,7 +69,7 @@ public class EmployeeController {
 	}
 
 	@DeleteMapping("/employees/{employeeId}")
-	public String deleteEmployee(@PathVariable int employeeId)  {
+	public String deleteEmployee(@PathVariable int employeeId) {
 //		Employee employee = employeeService.findEmployee(employeeId);
 		Employee employee = employeeRepository.getById(employeeId);
 //		if (employee == null)
