@@ -2,6 +2,7 @@ package com.springboot.cruddemo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.cruddemo.dao.EmployeeRepository;
@@ -13,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -57,6 +60,44 @@ class ControllerUnitTest {
 				.andExpect(jsonPath("$.timeStamp").exists());
 	}
 
+	@Test
+	public void GetAEmployeeByIdReturningTest() throws Exception {
+		String result = this.JSONtoString(buildEmployee());
+		Optional<Employee> employee = Optional.of(buildEmployee());
+		when(employeeRepository.findById(any())).thenReturn(employee);
+		mockMvc.perform(get("/api/employees/" + employee.get().getId()))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(content().contentType("application/json"))
+				.andExpect(content().json(result));
+	}
+
+	@Test
+	public void GetAEmployeeByIdNotFoundTest() throws Exception {
+		Optional<Employee> employee = Optional.empty();
+		when(employeeRepository.findById(any())).thenReturn(employee);
+		mockMvc.perform(get("/api/employees/22222"))
+				.andDo(print())
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType("application/json"))
+				.andExpect(jsonPath("$.statusCode").value(404))
+				.andExpect(jsonPath("$.message").value("Employee id - 22222 not found"))
+				.andExpect(jsonPath("$.timeStamp").exists());
+	}
+
+	@Test
+	public void GetAEmployeeByIdWrongPathVariableTest() throws Exception {
+		Optional<Employee> employee = Optional.empty();
+		when(employeeRepository.findById(any())).thenReturn(employee);
+		mockMvc.perform(get("/api/employees/xyz"))
+				.andDo(print())
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType("application/json"))
+				.andExpect(jsonPath("$.statusCode").value(400))
+				.andExpect(jsonPath("$.message").exists())
+				.andExpect(jsonPath("$.timeStamp").exists());
+	}
+
 	private List<Employee> getDummyEmployeeList() {
 		List<Employee> employees = new ArrayList<>();
 		employees.add(buildEmployee());
@@ -67,6 +108,11 @@ class ControllerUnitTest {
 	private List<Employee> getEmptyEmployeeList() {
 		List<Employee> employees = new ArrayList<>();
 		return employees;
+	}
+
+	private Employee getEmptyEmployee() {
+		Employee employee = new Employee();
+		return employee;
 	}
 
 	public Employee buildEmployee() {

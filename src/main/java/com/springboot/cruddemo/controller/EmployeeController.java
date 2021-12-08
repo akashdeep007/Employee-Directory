@@ -29,11 +29,11 @@ public class EmployeeController {
 
 	@Autowired
 	private EmployeeRepository employeeRepository;
-//	private EmployeeService employeeService;
+	// private EmployeeService employeeService;
 
 	@GetMapping("/employees")
 	public List<Employee> getAllEmployees() throws EmployeeNotFoundException {
-//		List<Employee> employees = employeeService.findAll();
+		// List<Employee> employees = employeeService.findAll();
 		List<Employee> employees = employeeRepository.findAll();
 		if (employees.isEmpty())
 			throw new EmployeeNotFoundException("No Records Exist");
@@ -42,17 +42,17 @@ public class EmployeeController {
 
 	@GetMapping("/employees/{employeeId}")
 	public Employee getEmployee(@PathVariable int employeeId) throws EmployeeNotFoundException {
-//		Employee employee = employeeService.findEmployee(employeeId);
+		// Employee employee = employeeService.findEmployee(employeeId);
 		Optional<Employee> employee = employeeRepository.findById(employeeId);
 		if (employee.isEmpty())
-			throw new EmployeeNotFoundException("Employee id - " + employeeId + " not found ");
+			throw new EmployeeNotFoundException("Employee id - " + employeeId + " not found");
 		return employee.get();
 	}
 
 	@PostMapping("/employees")
 	public ResponseEntity<Employee> addEmployee(@Valid @RequestBody Employee employee) {
 		employee.setId(0);
-//		employeeService.saveEmployee(employee);
+		// employeeService.saveEmployee(employee);
 		employeeRepository.save(employee);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(employee.getId())
 				.toUri();
@@ -62,7 +62,7 @@ public class EmployeeController {
 
 	@PutMapping("/employees")
 	public Employee updateEmployee(@RequestBody Employee employee) {
-//		employeeService.saveEmployee(employee);
+		// employeeService.saveEmployee(employee);
 		employeeRepository.save(employee);
 		return employee;
 
@@ -70,11 +70,12 @@ public class EmployeeController {
 
 	@DeleteMapping("/employees/{employeeId}")
 	public String deleteEmployee(@PathVariable int employeeId) {
-//		Employee employee = employeeService.findEmployee(employeeId);
+		// Employee employee = employeeService.findEmployee(employeeId);
 		Employee employee = employeeRepository.getById(employeeId);
-//		if (employee == null)
-//			throw new EmployeeNotFoundException("Employee id - " + employeeId + " not found ");
-//		employeeService.deleteEmployee(employeeId);
+		// if (employee == null)
+		// throw new EmployeeNotFoundException("Employee id - " + employeeId + " not
+		// found ");
+		// employeeService.deleteEmployee(employeeId);
 		employeeRepository.delete(employee);
 		return "Employee Deleted";
 
