@@ -1,10 +1,12 @@
 package com.springboot.cruddemo;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -185,6 +187,30 @@ class ControllerUnitTest {
 		when(employeeRepository.save(any())).thenReturn(buildEmployee());
 		mockMvc.perform(put("/api/employees")
 				.contentType(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType("application/json"))
+				.andExpect(jsonPath("$.statusCode").value(400))
+				.andExpect(jsonPath("$.message").exists())
+				.andExpect(jsonPath("$.timeStamp").exists());
+	}
+
+	@Test
+	public void DeleteAEmployeeWorkingTest() throws Exception {
+		Employee employee = buildEmployee();
+		when(employeeRepository.getById(any())).thenReturn(employee);
+		doNothing().when(employeeRepository).delete(any());
+		mockMvc.perform(delete("/api/employees/" + employee.getId()))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(content().string("Employee Deleted"));
+	}
+
+	@Test
+	public void DeleteAEmployeeNotPresentTest() throws Exception {
+		when(employeeRepository.getById(any())).thenThrow(new javax.persistence.EntityNotFoundException(
+				"Unable to find com.springboot.cruddemo.entity.Employee with id 2222"));
+		mockMvc.perform(delete("/api/employees/2222"))
 				.andDo(print())
 				.andExpect(status().isBadRequest())
 				.andExpect(content().contentType("application/json"))
