@@ -61,8 +61,11 @@ public class EmployeeController {
 	}
 
 	@PutMapping("/employees")
-	public Employee updateEmployee(@RequestBody Employee employee) {
+	public Employee updateEmployee(@RequestBody Employee employee) throws EmployeeNotFoundException {
 		// employeeService.saveEmployee(employee);
+		Optional<Employee> getEmployee = employeeRepository.findById(employee.getId());
+		if (getEmployee.isEmpty())
+			throw new EmployeeNotFoundException("Employee id - " + employee.getId() + " not found");
 		employeeRepository.save(employee);
 		return employee;
 

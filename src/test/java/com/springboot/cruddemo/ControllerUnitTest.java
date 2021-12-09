@@ -3,6 +3,7 @@ package com.springboot.cruddemo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -136,6 +137,54 @@ class ControllerUnitTest {
 		mockMvc.perform(post("/api/employees")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonString))
+				.andDo(print())
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType("application/json"))
+				.andExpect(jsonPath("$.statusCode").value(400))
+				.andExpect(jsonPath("$.message").exists())
+				.andExpect(jsonPath("$.timeStamp").exists());
+	}
+
+	@Test
+	public void UpdateAEmployeeWorkingTest() throws Exception {
+		Optional<Employee> employee = Optional.of(buildEmployee());
+		when(employeeRepository.findById(any())).thenReturn(employee);
+		when(employeeRepository.save(any())).thenReturn(buildEmployee());
+		String jsonString = this.JSONtoString(buildEmployee());
+		String result = this.JSONtoString(buildEmployee());
+		mockMvc.perform(put("/api/employees")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonString))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(content().contentType("application/json"))
+				.andExpect(content().json(result));
+	}
+
+	@Test
+	public void UpdateAEmployeeWithWrongIdTest() throws Exception {
+		Optional<Employee> employee = Optional.empty();
+		when(employeeRepository.findById(any())).thenReturn(employee);
+		when(employeeRepository.save(any())).thenReturn(buildEmployee());
+		String jsonString = this.JSONtoString(buildEmployee());
+		mockMvc.perform(put("/api/employees")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonString))
+				.andDo(print())
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType("application/json"))
+				.andExpect(jsonPath("$.statusCode").value(404))
+				.andExpect(jsonPath("$.message").exists())
+				.andExpect(jsonPath("$.timeStamp").exists());
+	}
+
+	@Test
+	public void UpdateAEmployeeWithNoDataTest() throws Exception {
+		Optional<Employee> employee = Optional.empty();
+		when(employeeRepository.findById(any())).thenReturn(employee);
+		when(employeeRepository.save(any())).thenReturn(buildEmployee());
+		mockMvc.perform(put("/api/employees")
+				.contentType(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isBadRequest())
 				.andExpect(content().contentType("application/json"))
